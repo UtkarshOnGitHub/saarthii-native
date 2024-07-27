@@ -1,9 +1,10 @@
-import { View, Text, Pressable, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, Pressable, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { theme } from '../constants/theme'
-import { hp } from '../helpers/common'
+import { hp, wp } from '../helpers/common'
+import GoogleIcon from './svg/GoogleSvg'
 
-const CustomButton = ({
+const SignupButtons = ({
     btnStyle,textStyle,onPress=()=>{},title='',hasShadow=false,loading=false
 }) => {
 
@@ -18,6 +19,10 @@ const CustomButton = ({
 
   return (
     <TouchableOpacity onPress={onPress} style={[styles.btn,btnStyle,hasShadow && shadowStyle]}>
+        <View style={styles.icon}>
+            <GoogleIcon  width="100%" height='50%'/>
+        </View>
+        
         <Text style={[styles.text,textStyle]}>{title}</Text>
     </TouchableOpacity>
   )
@@ -25,18 +30,30 @@ const CustomButton = ({
 
 const styles = StyleSheet.create({
     btn:{
-        backgroundColor:theme.colors.primary,
+        width:wp(90),
+        flexDirection:'row',
+        backgroundColor:'transparent',
         height:hp(6.6),
         justifyContent:'center',
         alignItems:'center',
         borderCurve:'continuous',
+        borderWidth:1,
         borderRadius:5,
+
     },
     text:{
-        fontSize:hp(2.5),
-        color:'white',
-        fontWeight:theme.fonts.bold
+        fontSize:hp(2),
+        color:'black',
+        fontWeight:theme.fonts.medium
+    },
+    icon:{
+        width:50,
+        height:50,
+        position:'absolute',
+        left:0,
+        display:'flex',
+        justifyContent:'center'
     }
 })
 
-export default CustomButton
+export default SignupButtons

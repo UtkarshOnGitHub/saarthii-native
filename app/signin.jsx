@@ -62,13 +62,10 @@ const Signup = () => {
         </ImageBackground>
         <View style={styles.container}>
           <View style={styles.punchLine}>
-            <Text style={styles.mainBold}>Create Account</Text>
-            <Text style={styles.smallMain}>To keep connected please create an account.</Text>
+            <Text style={styles.mainBold}>Welcome Back!</Text>
+            <Text style={styles.smallMain}>To keep connected please login with your personal info.</Text>
           </View>
           <View style={styles.form}>
-          <View style={styles.inputContainer}>
-              <TextInput fontSize={16} editable maxLength={40} value={email} onChangeText={handleInputChange} placeholder="Your Name" />
-            </View>
             <View style={styles.inputContainer}>
               <TextInput fontSize={16} editable maxLength={40} value={email} onChangeText={handleInputChange} placeholder="Enter Email" />
             </View>
@@ -76,16 +73,25 @@ const Signup = () => {
               <TextInput fontSize={16} editable maxLength={40} value={password} onChangeText={handlePasswordChange} placeholder="Enter Password" secureTextEntry />
             </View>
           </View>
-          {/* <TouchableOpacity style={styles.forgotPassword}>
+          <TouchableOpacity style={styles.forgotPassword}>
             <Text style={styles.forgotPasswordText}>Forget Password!</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
           <View style={{ width: wp(95)}}>
             <CustomButton
               onPress={handleSignIn}
-              title="Sign Up"
+              title="Sign In"
               btnStyle={{ marginHorizontal: wp(3), marginVertical: wp(10) }}
             />
+            {/* <Text style={{}}>Already have an account!</Text> */}
           </View>
+          <View style={styles.divider}>
+              <Text>
+                Or
+              </Text>
+          </View>
+          <View style={styles.auth}>
+            <SignupButtons title='Sign In with Google' btnStyle={{ marginHorizontal: wp(3), marginVertical: wp(10) }}/>    
+        </View>
         </View>
 
       </KeyboardAvoidingView>

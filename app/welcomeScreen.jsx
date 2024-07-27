@@ -9,7 +9,7 @@ import { router } from 'expo-router';
 
 export const  WelcomeScreen =()=> {
     return (
-        <ScreenWrapper bg='white'>
+        <ScreenWrapper bg='white' isPaddingRequired={false}>
             <StatusBar style='dark'/>
             {/* <ImageBackground> */}
             <ImageBackground style={styles.container} blurRadius={6} source={require('../assets/images/welcomePlane.png')}>
