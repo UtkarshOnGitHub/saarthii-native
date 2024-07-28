@@ -8,6 +8,7 @@ import { hp, wp } from "../helpers/common";
 import { theme } from "../constants/theme";
 import SignupButtons from "../components/SignUpButtons";
 import { SignInFromAxios } from "../http/SignIn";
+import { router } from "expo-router";
 
 const Signup = () => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -92,6 +93,7 @@ const Signup = () => {
           <View style={styles.auth}>
             <SignupButtons title='Sign In with Google' btnStyle={{ marginHorizontal: wp(3), marginVertical: wp(10) }}/>    
         </View>
+        <Text>Already have an account? <Text onPress={()=>router.push('signup')} style={styles.logIN}>Sign up</Text></Text>
         </View>
 
       </KeyboardAvoidingView>
@@ -167,6 +169,10 @@ const styles = StyleSheet.create({
     alignItems:'center',
     justifyContent:'center',
     
+  },
+  logIN:{
+    color:theme.colors.primary,
+    fontWeight:theme.fonts.bold
   }
 });
 

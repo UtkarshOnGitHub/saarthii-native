@@ -19,7 +19,7 @@ export const  WelcomeScreen =()=> {
                 <Text style={styles.punchLine}>Discover Travel Buddies With Saarthii</Text>
                 {/* Footer */}
                 <View style={styles.footer}>
-                    <CustomButton onPress={()=>{router.push('signup')}} title='Get Started' btnStyle={{marginHorizontal:wp(3),marginVertical:wp(10)}}></CustomButton>
+                    <CustomButton onPress={()=>{router.push('signin')}} title='Get Started' btnStyle={{marginHorizontal:wp(3),marginVertical:wp(10)}}></CustomButton>
                 </View>
             </ImageBackground>
         </ScreenWrapper>

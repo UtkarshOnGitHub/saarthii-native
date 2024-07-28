@@ -8,6 +8,7 @@ import { hp, wp } from "../helpers/common";
 import { theme } from "../constants/theme";
 import SignupButtons from "../components/SignUpButtons";
 import { SignInFromAxios } from "../http/SignIn";
+import { router } from "expo-router";
 
 const Signup = () => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -67,7 +68,7 @@ const Signup = () => {
           </View>
           <View style={styles.form}>
           <View style={styles.inputContainer}>
-              <TextInput fontSize={16} editable maxLength={40} value={email} onChangeText={handleInputChange} placeholder="Your Name" />
+              <TextInput fontSize={16} editable maxLength={40}  placeholder="Your Name" />
             </View>
             <View style={styles.inputContainer}>
               <TextInput fontSize={16} editable maxLength={40} value={email} onChangeText={handleInputChange} placeholder="Enter Email" />
@@ -86,7 +87,9 @@ const Signup = () => {
               btnStyle={{ marginHorizontal: wp(3), marginVertical: wp(10) }}
             />
           </View>
+          <Text>Already have an account? <Text onPress={()=>router.push('signin')} style={styles.logIN}>Sign in</Text></Text>
         </View>
+        
 
       </KeyboardAvoidingView>
     </ScreenWrapper>
@@ -161,6 +164,10 @@ const styles = StyleSheet.create({
     alignItems:'center',
     justifyContent:'center',
     
+  },
+  logIN:{
+    color:theme.colors.primary,
+    fontWeight:theme.fonts.bold,
   }
 });
 
