@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, ImageBackground, KeyboardAvoidingView, Platform, TouchableOpacity, Keyboard, Button } from "react-native";
+import { View, Text, StyleSheet, TextInput, ImageBackground, KeyboardAvoidingView, Platform, TouchableOpacity, Keyboard } from "react-native";
 import React from "react";
 import ScreenWrapper from "../constants/ScreenWrapper";
 import { StatusBar } from "expo-status-bar";
@@ -9,6 +9,7 @@ import { theme } from "../constants/theme";
 import SignupButtons from "../components/SignUpButtons";
 import { SignInFromAxios } from "../http/SignIn";
 import { router } from "expo-router";
+import { Button, Input, Label, Paragraph, Separator, Switch, XStack, YStack } from 'tamagui'
 
 const Signup = () => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -38,11 +39,12 @@ const Signup = () => {
     setPassword(text);
   };
 
-  const handleSignIn = ()=>{
-    console.log(email,password)
-    SignInFromAxios({email,password}).then((res)=>{
+  const handleSignIn = () => {
+    console.log(email, password)
+    router.push('/(tabs) ')
+    SignInFromAxios({ email, password }).then((res) => {
       console.log(res)
-    }).catch((err)=>{
+    }).catch((err) => {
       console.log(err)
     })
   }
@@ -62,38 +64,39 @@ const Signup = () => {
           <Text style={styles.logInText}>Sign In</Text>
         </ImageBackground>
         <View style={styles.container}>
+
           <View style={styles.punchLine}>
             <Text style={styles.mainBold}>Welcome Back!</Text>
             <Text style={styles.smallMain}>To keep connected please login with your personal info.</Text>
           </View>
           <View style={styles.form}>
             <View style={styles.inputContainer}>
-              <TextInput fontSize={16} editable maxLength={40} value={email} onChangeText={handleInputChange} placeholder="Enter Email" />
+              <TextInput fontSize={18} editable maxLength={40} value={email} onChangeText={handleInputChange} placeholder="Enter Email" />
             </View>
             <View style={styles.inputContainer}>
-              <TextInput fontSize={16} editable maxLength={40} value={password} onChangeText={handlePasswordChange} placeholder="Enter Password" secureTextEntry />
+              <TextInput fontSize={18} editable maxLength={40} value={password} onChangeText={handlePasswordChange} placeholder="Enter Password" secureTextEntry />
             </View>
           </View>
           <TouchableOpacity style={styles.forgotPassword}>
             <Text style={styles.forgotPasswordText}>Forget Password!</Text>
           </TouchableOpacity>
-          <View style={{ width: wp(95)}}>
+          <View style={{ width: wp(95) }}>
             <CustomButton
               onPress={handleSignIn}
               title="Sign In"
-              btnStyle={{ marginHorizontal: wp(3), marginVertical: wp(10) }}
+              btnStyle={{ marginHorizontal: wp(3),marginTop:hp(3) }}
             />
-            {/* <Text style={{}}>Already have an account!</Text> */}
+
           </View>
-          <View style={styles.divider}>
-              <Text>
-                Or
-              </Text>
+          <YStack style={{marginTop:hp(4)}}>
+            <SignupButtons title='Sign In with Google' btnStyle={{ marginHorizontal: wp(3), marginVertical: hp(0) }} />
+          </YStack>
+          <View style={{flex:1,width:wp(90),justifyContent:'start',alignItems:'center',paddingTop:hp(3)}}>
+            <Text style={{fontSize:20,fontWeight:theme.fonts.medium}}>Create a account?  
+            <Text onPress={()=>router.push('signup')} style={styles.logIN}> Sign Up</Text></Text>
           </View>
-          <View style={styles.auth}>
-            <SignupButtons title='Sign In with Google' btnStyle={{ marginHorizontal: wp(3), marginVertical: wp(10) }}/>    
-        </View>
-        <Text>Already have an account? <Text onPress={()=>router.push('signup')} style={styles.logIN}>Sign up</Text></Text>
+         
+
         </View>
 
       </KeyboardAvoidingView>
@@ -118,7 +121,7 @@ const styles = StyleSheet.create({
   },
   punchLine: {
     width: wp(90),
-    paddingTop:hp(4)
+    paddingTop: hp(4)
   },
   mainBold: {
     fontSize: 32,
@@ -133,6 +136,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   container: {
+    flex:1,
     alignItems: "center",
     borderTopStartRadius: 30,
     borderTopRightRadius: 30,
@@ -140,16 +144,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingBottom: hp(3),
   },
-  form:{
-    paddingTop:hp(4)
+  form: {
+    paddingTop: hp(4)
   },
   inputContainer: {
     width: wp(90),
     marginVertical: hp(1),
-    padding: hp(2),
+    padding: hp(1.6),
     backgroundColor: theme.colors.grayLightBlue,
     borderRadius: theme.radius.xs,
-    fontSize:wp(32)
+    fontSize: wp(32)
   },
   forgotPassword: {
     width: wp(90),
@@ -159,20 +163,20 @@ const styles = StyleSheet.create({
     color: theme.colors.primary,
     fontWeight: theme.fonts.semiBold,
   },
-  auth:{  
-    width:wp(100),
+  auth: {
+    width: wp(100),
     alignItems: "center",
-    justifyContent:'center',
-    flexDirection:'column'
+    justifyContent: 'center',
+    flexDirection: 'column'
   },
-  divider:{
-    alignItems:'center',
-    justifyContent:'center',
-    
+  divider: {
+    alignItems: 'center',
+    justifyContent: 'center',
+
   },
-  logIN:{
-    color:theme.colors.primary,
-    fontWeight:theme.fonts.bold
+  logIN: {
+    color: theme.colors.primary,
+    fontWeight: theme.fonts.bold
   }
 });
 

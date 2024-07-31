@@ -9,6 +9,7 @@ import { theme } from "../constants/theme";
 import SignupButtons from "../components/SignUpButtons";
 import { SignInFromAxios } from "../http/SignIn";
 import { router } from "expo-router";
+import { YStack } from "tamagui";
 
 const Signup = () => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -59,7 +60,7 @@ const Signup = () => {
           style={[styles.topContainer, { height: isKeyboardVisible ? hp(15) : hp(25) }]}
           source={require("../assets/images/login-bg.jpg")}
         >
-          <Text style={styles.logInText}>Sign In</Text>
+          <Text style={styles.logInText}>Sign Up</Text>
         </ImageBackground>
         <View style={styles.container}>
           <View style={styles.punchLine}>
@@ -68,13 +69,13 @@ const Signup = () => {
           </View>
           <View style={styles.form}>
           <View style={styles.inputContainer}>
-              <TextInput fontSize={16} editable maxLength={40}  placeholder="Your Name" />
+              <TextInput fontSize={18} editable maxLength={40}  placeholder="Your Name" />
             </View>
             <View style={styles.inputContainer}>
-              <TextInput fontSize={16} editable maxLength={40} value={email} onChangeText={handleInputChange} placeholder="Enter Email" />
+              <TextInput fontSize={18} editable maxLength={40} value={email} onChangeText={handleInputChange} placeholder="Enter Email" />
             </View>
             <View style={styles.inputContainer}>
-              <TextInput fontSize={16} editable maxLength={40} value={password} onChangeText={handlePasswordChange} placeholder="Enter Password" secureTextEntry />
+              <TextInput fontSize={18} editable maxLength={40} value={password} onChangeText={handlePasswordChange} placeholder="Enter Password" secureTextEntry />
             </View>
           </View>
           {/* <TouchableOpacity style={styles.forgotPassword}>
@@ -84,10 +85,17 @@ const Signup = () => {
             <CustomButton
               onPress={handleSignIn}
               title="Sign Up"
-              btnStyle={{ marginHorizontal: wp(3), marginVertical: wp(10) }}
+              btnStyle={{ marginHorizontal: wp(3), marginTop: hp(3) }}
             />
           </View>
-          <Text>Already have an account? <Text onPress={()=>router.push('signin')} style={styles.logIN}>Sign in</Text></Text>
+          <YStack style={{marginTop:hp(4)}}>
+            <SignupButtons title='Sign Up with Google' btnStyle={{ marginHorizontal: wp(3), marginVertical: hp(0) }} />
+          </YStack>
+          <View style={{flex:1,width:wp(90),justifyContent:'start',alignItems:'center',paddingTop:hp(3)}}>
+            <Text style={{fontSize:20,fontWeight:theme.fonts.medium}}>Create a account?  
+            <Text onPress={()=>router.push('signin')} style={styles.logIN}> Sign Up</Text></Text>
+          </View>
+          {/* <Text>Already have an account? <Text onPress={()=>router.push('signin')} style={styles.logIN}>Sign in</Text></Text> */}
         </View>
         
 
@@ -128,6 +136,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   container: {
+    flex:1,
     alignItems: "center",
     borderTopStartRadius: 30,
     borderTopRightRadius: 30,
@@ -141,7 +150,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: wp(90),
     marginVertical: hp(1),
-    padding: hp(2),
+    padding: hp(1.6),
     backgroundColor: theme.colors.grayLightBlue,
     borderRadius: theme.radius.xs,
     fontSize:wp(32)

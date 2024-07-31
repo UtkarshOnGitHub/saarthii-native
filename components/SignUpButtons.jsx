@@ -3,6 +3,8 @@ import React from 'react'
 import { theme } from '../constants/theme'
 import { hp, wp } from '../helpers/common'
 import GoogleIcon from './svg/GoogleSvg'
+import { Button } from 'tamagui';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 const SignupButtons = ({
     btnStyle,textStyle,onPress=()=>{},title='',hasShadow=false,loading=false
@@ -19,11 +21,17 @@ const SignupButtons = ({
 
   return (
     <TouchableOpacity onPress={onPress} style={[styles.btn,btnStyle,hasShadow && shadowStyle]}>
-        <View style={styles.icon}>
+        {/* <View style={styles.icon}>
             <GoogleIcon  width="100%" height='50%'/>
         </View>
         
-        <Text style={[styles.text,textStyle]}>{title}</Text>
+        <Text style={[styles.text,textStyle]}>{title}</Text> */}
+        <Button style={[styles.btn,btnStyle,hasShadow && shadowStyle]} onPress={onPress}>
+        <View style={styles.icon}>
+            <GoogleIcon  width="100%" height='50%'/>
+        </View>
+            {title}
+        </Button>
     </TouchableOpacity>
   )
 }
@@ -32,12 +40,11 @@ const styles = StyleSheet.create({
     btn:{
         width:wp(90),
         flexDirection:'row',
-        backgroundColor:'transparent',
-        height:hp(6.6),
+        height:hp(5.6),
         justifyContent:'center',
         alignItems:'center',
         borderCurve:'continuous',
-        borderWidth:1,
+        // borderWidth:1,
         borderRadius:5,
 
     },

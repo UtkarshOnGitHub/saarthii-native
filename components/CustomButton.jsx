@@ -26,14 +26,14 @@ const CustomButton = ({
 const styles = StyleSheet.create({
     btn:{
         backgroundColor:theme.colors.primary,
-        height:hp(6.6),
+        height:hp(5.6),
         justifyContent:'center',
         alignItems:'center',
         borderCurve:'continuous',
         borderRadius:5,
     },
     text:{
-        fontSize:hp(2.5),
+        fontSize:hp(1.9),
         color:'white',
         fontWeight:theme.fonts.bold
     }
