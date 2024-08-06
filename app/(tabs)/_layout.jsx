@@ -2,6 +2,7 @@ import { Tabs } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "../../constants/theme";
 import ScreenWrapper from "../../constants/ScreenWrapper";
+import Toast from "react-native-toast-message";
 
 
 export default function RootLayout(){
@@ -25,5 +26,6 @@ export default function RootLayout(){
         )}} />
 
     </Tabs>
+    <Toast  swipeable={true} />
     </ScreenWrapper> 
 }

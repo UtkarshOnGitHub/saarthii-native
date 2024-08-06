@@ -1,1 +1,1 @@
-export const ServerURL = 'https://api.saarthi.tech/'
+export const ServerURL = 'https://api.saarthii.tech/'

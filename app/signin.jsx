@@ -1,18 +1,25 @@
-import { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, ImageBackground, KeyboardAvoidingView, Platform, TouchableOpacity, Keyboard } from "react-native";
-import React from "react";
-import ScreenWrapper from "../constants/ScreenWrapper";
-import { StatusBar } from "expo-status-bar";
-import CustomButton from "../components/CustomButton";
-import { hp, wp } from "../helpers/common";
-import { theme } from "../constants/theme";
-import SignupButtons from "../components/SignUpButtons";
-import { SignInFromAxios } from "../http/SignIn";
-import { router } from "expo-router";
-import { Button, Input, Label, Paragraph, Separator, Switch, XStack, YStack } from 'tamagui'
+import React , { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TextInput, ImageBackground, KeyboardAvoidingView, Platform, TouchableOpacity, Keyboard, ActivityIndicator } from 'react-native';
+import ScreenWrapper from '../constants/ScreenWrapper';
+import { StatusBar } from 'expo-status-bar';
+import CustomButton from '../components/CustomButton';
+import { hp, wp } from '../helpers/common';
+import { theme } from '../constants/theme';
+import SignupButtons from '../components/SignUpButtons';
+import { SignInFromAxios } from '../http/SignIn';
+import { router } from 'expo-router';
+import { YStack } from 'tamagui';
+import Toast from 'react-native-toast-message';
+import { ServerURL } from '../Server/Service';
+
+
+
 
 const Signup = () => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading , setIsLoading] = useState(false)
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -28,9 +35,6 @@ const Signup = () => {
     };
   }, []);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
   const handleInputChange = (text) => {
     setEmail(text);
   };
@@ -40,31 +44,63 @@ const Signup = () => {
   };
 
   const handleSignIn = () => {
-    console.log(email, password)
-    router.push('/(tabs) ')
-    SignInFromAxios({ email, password }).then((res) => {
-      console.log(res)
-    }).catch((err) => {
-      console.log(err)
-    })
+    setIsLoading(true)
+    SignInFromAxios({ email, password })
+      .then((res) => {
+        setIsLoading(false)
+        console.log(res)
+        if (res.data.redirect) {
+          router.push('/(tabs)');
+        }else{
+          Toast.show({
+            type: 'error',
+            text1: 'Ooopss',
+            text2: 'Something Went Wrong!',
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false)
+        Toast.show({
+          type: 'error',
+          text1: 'Ooopss',
+          text2: 'Something Went Wrong!',
+        });
+      });
+  };
+
+  function handleGoogleAuth(){
+    // window.location.href = ServerURL + "api/authentication/google/";
+    // return {success : true };
   }
+
+
+  if(isLoading){
+    return(
+      <View style={[styles.containerLOader, styles.horizontalLoad]}>
+        <ActivityIndicator size="28" color="#fff" />
+      </View>
+    )
+  }
+
+
 
   return (
     <ScreenWrapper bg="white" isPaddingRequired={false}>
       <StatusBar style="dark" />
       <KeyboardAvoidingView
         style={styles.wrapper}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0} // adjust this value based on your header height
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
       >
         <ImageBackground
           style={[styles.topContainer, { height: isKeyboardVisible ? hp(15) : hp(25) }]}
-          source={require("../assets/images/login-bg.jpg")}
+          source={require('../assets/images/login-bg.jpg')}
         >
           <Text style={styles.logInText}>Sign In</Text>
         </ImageBackground>
         <View style={styles.container}>
-
           <View style={styles.punchLine}>
             <Text style={styles.mainBold}>Welcome Back!</Text>
             <Text style={styles.smallMain}>To keep connected please login with your personal info.</Text>
@@ -84,22 +120,21 @@ const Signup = () => {
             <CustomButton
               onPress={handleSignIn}
               title="Sign In"
-              btnStyle={{ marginHorizontal: wp(3),marginTop:hp(3) }}
+              btnStyle={{ marginHorizontal: wp(3), marginTop: hp(3) }}
             />
-
           </View>
-          <YStack style={{marginTop:hp(4)}}>
-            <SignupButtons title='Sign In with Google' btnStyle={{ marginHorizontal: wp(3), marginVertical: hp(0) }} />
+          <YStack style={{ marginTop: hp(4) }}>
+            <SignupButtons onPress={handleGoogleAuth} title="Sign In with Google" btnStyle={{ marginHorizontal: wp(3), marginVertical: hp(0) }} />
           </YStack>
-          <View style={{flex:1,width:wp(90),justifyContent:'start',alignItems:'center',paddingTop:hp(3)}}>
-            <Text style={{fontSize:20,fontWeight:theme.fonts.medium}}>Create a account?  
-            <Text onPress={()=>router.push('signup')} style={styles.logIN}> Sign Up</Text></Text>
+          <View style={{ flex: 1, width: wp(90), justifyContent: 'start', alignItems: 'center', paddingTop: hp(3) }}>
+            <Text style={{ fontSize: 20, fontWeight: theme.fonts.medium }}>
+              Create an account?  
+              <Text onPress={() => router.push('signup')} style={styles.logIN}> Sign Up</Text>
+            </Text>
           </View>
-         
-
         </View>
-
       </KeyboardAvoidingView>
+      <Toast swipeable={true} />
     </ScreenWrapper>
   );
 };
@@ -121,7 +156,7 @@ const styles = StyleSheet.create({
   },
   punchLine: {
     width: wp(90),
-    paddingTop: hp(4)
+    paddingTop: hp(4),
   },
   mainBold: {
     fontSize: 32,
@@ -136,8 +171,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   container: {
-    flex:1,
-    alignItems: "center",
+    flex: 1,
+    alignItems: 'center',
     borderTopStartRadius: 30,
     borderTopRightRadius: 30,
     marginTop: -30,
@@ -145,7 +180,7 @@ const styles = StyleSheet.create({
     paddingBottom: hp(3),
   },
   form: {
-    paddingTop: hp(4)
+    paddingTop: hp(4),
   },
   inputContainer: {
     width: wp(90),
@@ -153,7 +188,6 @@ const styles = StyleSheet.create({
     padding: hp(1.6),
     backgroundColor: theme.colors.grayLightBlue,
     borderRadius: theme.radius.xs,
-    fontSize: wp(32)
   },
   forgotPassword: {
     width: wp(90),
@@ -163,21 +197,25 @@ const styles = StyleSheet.create({
     color: theme.colors.primary,
     fontWeight: theme.fonts.semiBold,
   },
-  auth: {
-    width: wp(100),
-    alignItems: "center",
-    justifyContent: 'center',
-    flexDirection: 'column'
-  },
-  divider: {
-    alignItems: 'center',
-    justifyContent: 'center',
-
-  },
   logIN: {
     color: theme.colors.primary,
-    fontWeight: theme.fonts.bold
-  }
+    fontWeight: theme.fonts.bold,
+  },
+  containerLOader: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor:theme.colors.primary
+  },
+  horizontalLoad: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+  },
 });
+
+
+
+
+
 
 export default Signup;

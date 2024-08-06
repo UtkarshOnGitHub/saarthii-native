@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -14,6 +14,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { hp, wp } from "../../helpers/common";
 import CustomButton from "../../components/CustomButton";
 import { theme } from "../../constants/theme";
+import Toast from "react-native-toast-message";
 
 const AllNews = () => {
   const [query, setQuery] = useState("");
@@ -59,6 +60,14 @@ const AllNews = () => {
       },
     ],
   });
+
+  useEffect(()=>{
+    Toast.show({
+      type: 'success',
+      text1: 'Welcome Back!',
+      text2: 'Create Journey and Make Friends 👋'
+    });
+  },[])
 
   const router = useRouter();
 
