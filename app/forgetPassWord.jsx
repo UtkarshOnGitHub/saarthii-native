@@ -1,15 +1,14 @@
-import React , { useState, useEffect } from 'react';
+import React , { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TextInput, ImageBackground, KeyboardAvoidingView, Platform, TouchableOpacity, Keyboard, ActivityIndicator, Alert } from 'react-native';
 import ScreenWrapper from '../constants/ScreenWrapper';
 import { StatusBar } from 'expo-status-bar';
 import CustomButton from '../components/CustomButton';
 import { hp, wp } from '../helpers/common';
 import { theme } from '../constants/theme';
-import SignupButtons from '../components/SignUpButtons';
-import { SignInFromAxios } from '../http/Auth';
 import { router } from 'expo-router';
 import Toast from 'react-native-toast-message';
-import { ServerURL } from '../Server/Service';
+import OTPTextInput from 'react-native-otp-textinput'
+import { sendVerificationEmail, verifyVerificationCode } from '../http/Auth';
 
 
 
@@ -17,8 +16,10 @@ import { ServerURL } from '../Server/Service';
 const Signup = () => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isLoading , setIsLoading] = useState(false)
+  const [isEmailSent , setIsEmailSent] = useState(false)
+  const [otpValue , setOTPVALUE] = useState('');
+  const otp = useRef(null);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -38,45 +39,61 @@ const Signup = () => {
     setEmail(text);
   };
 
-  const handlePasswordChange = (text) => {
-    setPassword(text);
-  };
-
-  const handleSignIn = () => {
+  const handleSendEmail = () => {
     setIsLoading(true)
-    if(!email || !password){
-      Alert.alert('Login' , "Please fill all the fields!")
-      setIsLoading(false )
+    if(!email){
+      Alert.alert('Reset Password' , "Please fill all the fields!")
       return
     }
-    SignInFromAxios({ email, password })
-      .then((res) => {
+    sendVerificationEmail({email,type:'email'}).then((res)=>{
         setIsLoading(false)
-        console.log(res)
-        if (res.data.redirect) {
-          router.push('/(tabs)');
-        }else{
-          Toast.show({
-            type: 'error',
-            text1: 'Ooopss',
-            text2: 'Something Went Wrong!',
-          });
+        if(res){
+            Toast.show({
+                type: 'success',
+                text1: 'Success',
+                text2: res?.data?.message,
+              });
+              setIsEmailSent(true)
         }
-      })
-      .catch((err) => {
-        console.log(err);
+    }).catch((err)=>{
         setIsLoading(false)
         Toast.show({
-          type: 'error',
-          text1: 'Ooopss',
-          text2: 'Something Went Wrong!',
-        });
-      });
+            type: 'error',
+            text1: 'Server Error',
+            text2: 'Something Went Wrong!',
+          });
+    })
   };
 
-  function handleGoogleAuth(){
-    router.push(ServerURL + "api/authentication/google/")    // return {success : true };
+  const handleVerifyEmail = ()=>{
+    if(otpValue.length < 6){
+        Alert.alert('OTP' , "OTP value must be 6 digit!")
+        return
+      }
+    verifyVerificationCode({email,code:otpValue}).then((res)=>{
+        setIsLoading(false)
+        if(res){
+            Toast.show({
+                type: 'success',
+                text1: 'Success',
+                text2: res?.data?.message,
+              });
+              router.push('signin')
+        }
+    }).catch((err)=>{
+        setIsLoading(false)
+        Toast.show({
+            type: 'error',
+            text1: 'Server Error',
+            text2: 'Something Went Wrong!',
+          });
+    })
   }
+
+  const handleOtpChange = (value)=>{
+    setOTPVALUE(value)
+  }
+
 
 
 
@@ -92,39 +109,38 @@ const Signup = () => {
           style={[styles.topContainer, { height: isKeyboardVisible ? hp(15) : hp(25) }]}
           source={require('../assets/images/login-bg.jpg')}
         >
-          <Text style={styles.logInText}>Sign In</Text>
+          <Text style={styles.logInText}>Reset Password</Text>
         </ImageBackground>
         <View style={styles.container}>
           <View style={styles.punchLine}>
-            <Text style={styles.mainBold}>Welcome Back!</Text>
-            <Text style={styles.smallMain}>To keep connected please login with your personal info.</Text>
+            <Text style={styles.mainBold}>Forget Password ?</Text>
+            <Text style={styles.smallMain}>No Issues we are here to help you out.</Text>
           </View>
           <View style={styles.form}>
             <View style={styles.inputContainer}>
               <TextInput fontSize={18} editable maxLength={40} value={email} onChangeText={handleInputChange} placeholder="Enter Email" />
-            </View>
-            <View style={styles.inputContainer}>
-              <TextInput fontSize={18} editable maxLength={40} value={password} onChangeText={handlePasswordChange} placeholder="Enter Password" secureTextEntry />
-            </View>
+            </View>            
           </View>
-          <TouchableOpacity style={styles.forgotPassword} onPress={()=>{router.push("forgetPassWord")}}>
-            <Text style={styles.forgotPasswordText}>Forget Password!</Text>
-          </TouchableOpacity>
+          {isEmailSent ? <OTPTextInput ref={otp}
+          handleTextChange={handleOtpChange} inputCount={6}/> : null}
           <View style={{ width: wp(95) }}>
-           <CustomButton
-              onPress={handleSignIn}
-              title="Sign In"
+           {!isEmailSent ? <CustomButton
+              onPress={handleSendEmail}
+              title="Send Verification Code"
               isLoading={isLoading}
               btnStyle={{ marginHorizontal: wp(3), marginTop: hp(3) }}
-            />
+            /> : <CustomButton
+            onPress={handleVerifyEmail}
+            title="Reset Password"
+            isLoading={isLoading}
+            btnStyle={{ marginHorizontal: wp(3), marginTop: hp(3) }}
+          />}
           </View>
-          <View style={{ marginTop: hp(4) }}>
-            <SignupButtons onPress={handleGoogleAuth} title="Sign In with Google" btnStyle={{ marginHorizontal: wp(3), marginVertical: hp(0) }} />
-          </View>
+          
           <View style={{ flex: 1, width: wp(90), justifyContent: 'start', alignItems: 'center', paddingTop: hp(3) }}>
             <Text style={{ fontSize: 20, fontWeight: theme.fonts.medium }}>
-              Create an account?  
-              <Text onPress={() => router.push('signup')} style={styles.logIN}> Sign Up</Text>
+              Got your password?  
+              <Text onPress={() => router.push('signin')} style={styles.logIN}> Sign In</Text>
             </Text>
           </View>
         </View>

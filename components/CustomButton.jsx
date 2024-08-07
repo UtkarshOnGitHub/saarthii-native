@@ -1,10 +1,10 @@
-import { View, Text, Pressable, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, Pressable, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { theme } from '../constants/theme'
-import { hp } from '../helpers/common'
+import { hp, wp } from '../helpers/common'
 
 const CustomButton = ({
-    btnStyle,textStyle,onPress=()=>{},title='',hasShadow=false,loading=false
+    btnStyle,textStyle,onPress=()=>{},title='',hasShadow=false,isLoading=false
 }) => {
 
     const shadowStyle = {
@@ -17,9 +17,12 @@ const CustomButton = ({
     }
 
   return (
+    <>
+    { isLoading ? <View style={{marginHorizontal: wp(3), marginTop: hp(3)}}><ActivityIndicator size={"large"}  color={theme.colors.primary}/></View>:
     <TouchableOpacity onPress={onPress} style={[styles.btn,btnStyle,hasShadow && shadowStyle]}>
         <Text style={[styles.text,textStyle]}>{title}</Text>
-    </TouchableOpacity>
+    </TouchableOpacity>}
+    </>
   )
 }
 

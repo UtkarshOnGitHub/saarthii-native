@@ -1,9 +1,8 @@
-import { View, Text, Pressable, StyleSheet, TouchableOpacity, Image } from 'react-native'
+import { View, Text,Button, Pressable, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { theme } from '../constants/theme'
 import { hp, wp } from '../helpers/common'
 import GoogleIcon from './svg/GoogleSvg'
-import { Button } from 'tamagui';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 const SignupButtons = ({
@@ -26,12 +25,12 @@ const SignupButtons = ({
         </View>
         
         <Text style={[styles.text,textStyle]}>{title}</Text> */}
-        <Button style={[styles.btn,btnStyle,hasShadow && shadowStyle]} onPress={onPress}>
+        <View style={[styles.btn,btnStyle,hasShadow && shadowStyle]} onPress={onPress}>
         <View style={styles.icon}>
             <GoogleIcon  width="100%" height='50%'/>
         </View>
-            {title}
-        </Button>
+            <Text>{title}</Text>
+        </View>
     </TouchableOpacity>
   )
 }
@@ -46,6 +45,7 @@ const styles = StyleSheet.create({
         borderCurve:'continuous',
         // borderWidth:1,
         borderRadius:5,
+        backgroundColor:theme.colors.grayLightBlue
 
     },
     text:{
