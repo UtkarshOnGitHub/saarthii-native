@@ -1,11 +1,14 @@
-import { Tabs } from "expo-router";
+import { router, Tabs } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
 import { theme } from "../../constants/theme";
 import ScreenWrapper from "../../constants/ScreenWrapper";
 import Toast from "react-native-toast-message";
+import { useAuth } from "../../Context/AuthContext";
 
 
 export default function RootLayout(){
+    const { token, updateToken, deleteToken } = useAuth();
+
     return<ScreenWrapper>
     <Tabs screenOptions={{
 

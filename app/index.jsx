@@ -1,19 +1,28 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
 import { Button, Text, View } from 'react-native';
-import ScreenWrapper from "../constants/ScreenWrapper"
-import {router} from "expo-router"
-import {WelcomeScreen} from "./welcomeScreen"
-import Toast from 'react-native-toast-message';
+import ScreenWrapper from "../constants/ScreenWrapper";
+import { useRouter } from 'expo-router';
+import { WelcomeScreen } from "./welcomeScreen";
+import { useAuth } from '../Context/AuthContext';
 
 
+const Index = () => {
+  const { token } = useAuth();
+  const router = useRouter();
 
-const index = () => {
+  useEffect(() => {
+    if(typeof token == 'object'){
+      return;
+    }else{
+      router.push("/(tabs)");
+    }
+  }, [token, router]);
 
   return (
-      <ScreenWrapper isPaddingRequired={false}>
-          <WelcomeScreen/>
-      </ScreenWrapper>
-  )
-}
+    <ScreenWrapper isPaddingRequired={false}>
+      <WelcomeScreen />
+    </ScreenWrapper>
+  );
+};
 
-export default index
+export default Index;

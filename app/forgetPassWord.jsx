@@ -82,6 +82,7 @@ const Signup = () => {
         }
     }).catch((err)=>{
         setIsLoading(false)
+        console.log(err)
         Toast.show({
             type: 'error',
             text1: 'Server Error',
@@ -118,7 +119,7 @@ const Signup = () => {
           </View>
           <View style={styles.form}>
             <View style={styles.inputContainer}>
-              <TextInput fontSize={18} editable maxLength={40} value={email} onChangeText={handleInputChange} placeholder="Enter Email" />
+              <TextInput fontSize={18} editable maxLength={40} value={email} onChangeText={handleInputChange} placeholder="Enter Email" placeholderTextColor={theme.colors.grayDark}/>
             </View>            
           </View>
           {isEmailSent ? <OTPTextInput ref={otp}

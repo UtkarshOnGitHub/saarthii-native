@@ -1,4 +1,4 @@
-import React , { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, ImageBackground, KeyboardAvoidingView, Platform, TouchableOpacity, Keyboard, ActivityIndicator, Alert } from 'react-native';
 import ScreenWrapper from '../constants/ScreenWrapper';
 import { StatusBar } from 'expo-status-bar';
@@ -7,18 +7,20 @@ import { hp, wp } from '../helpers/common';
 import { theme } from '../constants/theme';
 import SignupButtons from '../components/SignUpButtons';
 import { SignInFromAxios } from '../http/Auth';
-import { router } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
+import { useAuth } from '../Context/AuthContext';
 import { ServerURL } from '../Server/Service';
 
 
-
-
-const Signup = () => {
+const SignIn = () => {
+  const { token, updateToken } = useAuth();
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading , setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const navigation = useNavigation()
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -34,6 +36,14 @@ const Signup = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if(typeof token == 'object'){
+      return;
+    }else{
+      router.push("/(tabs)");
+    }
+  }, [token, router]);
+
   const handleInputChange = (text) => {
     setEmail(text);
   };
@@ -43,42 +53,47 @@ const Signup = () => {
   };
 
   const handleSignIn = () => {
-    setIsLoading(true)
-    if(!email || !password){
-      Alert.alert('Login' , "Please fill all the fields!")
-      setIsLoading(false )
-      return
+    setIsLoading(true);
+    if (!email || !password) {
+        Alert.alert('Login', 'Please fill all the fields!');
+        setIsLoading(false);
+        return;
     }
     SignInFromAxios({ email, password })
-      .then((res) => {
-        setIsLoading(false)
-        console.log(res)
-        if (res.data.redirect) {
-          router.push('/(tabs)');
-        }else{
-          Toast.show({
-            type: 'error',
-            text1: 'Ooopss',
-            text2: 'Something Went Wrong!',
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setIsLoading(false)
-        Toast.show({
-          type: 'error',
-          text1: 'Ooopss',
-          text2: 'Something Went Wrong!',
+        .then((res) => {
+            setIsLoading(false);
+            if (res.data.redirect) {
+                const newToken = res.headers['set-cookie'][0].split('=')[1].split(';')[0];
+                updateToken(newToken);
+                // Reset the navigation state to the home screen
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: '(tabs)' }], // Adjust to your home screen route
+                });
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Ooopss',
+                    text2: 'Something Went Wrong!',
+                });
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            setIsLoading(false);
+            Toast.show({
+                type: 'error',
+                text1: 'Ooopss',
+                text2: 'Something Went Wrong!',
+            });
         });
-      });
-  };
+};
 
-  function handleGoogleAuth(){
-    router.push(ServerURL + "api/authentication/google/")    // return {success : true };
+
+
+  function handleGoogleAuth() {
+    router.push(ServerURL + 'api/authentication/google/');
   }
-
-
 
   return (
     <ScreenWrapper bg="white" isPaddingRequired={false}>
@@ -101,17 +116,34 @@ const Signup = () => {
           </View>
           <View style={styles.form}>
             <View style={styles.inputContainer}>
-              <TextInput fontSize={18} editable maxLength={40} value={email} onChangeText={handleInputChange} placeholder="Enter Email" />
+              <TextInput
+                fontSize={18}
+                editable
+                maxLength={40}
+                value={email}
+                onChangeText={handleInputChange}
+                placeholder="Enter Email"
+                placeholderTextColor={theme.colors.grayDark}
+              />
             </View>
             <View style={styles.inputContainer}>
-              <TextInput fontSize={18} editable maxLength={40} value={password} onChangeText={handlePasswordChange} placeholder="Enter Password" secureTextEntry />
+              <TextInput
+                fontSize={18}
+                editable
+                maxLength={40}
+                value={password}
+                onChangeText={handlePasswordChange}
+                placeholder="Enter Password"
+                secureTextEntry
+                placeholderTextColor={theme.colors.grayDark}
+              />
             </View>
           </View>
-          <TouchableOpacity style={styles.forgotPassword} onPress={()=>{router.push("forgetPassWord")}}>
+          <TouchableOpacity style={styles.forgotPassword} onPress={() => router.push('forgetPassWord')}>
             <Text style={styles.forgotPasswordText}>Forget Password!</Text>
           </TouchableOpacity>
           <View style={{ width: wp(95) }}>
-           <CustomButton
+            <CustomButton
               onPress={handleSignIn}
               title="Sign In"
               isLoading={isLoading}
@@ -123,7 +155,7 @@ const Signup = () => {
           </View>
           <View style={{ flex: 1, width: wp(90), justifyContent: 'start', alignItems: 'center', paddingTop: hp(3) }}>
             <Text style={{ fontSize: 20, fontWeight: theme.fonts.medium }}>
-              Create an account?  
+              Create an account?
               <Text onPress={() => router.push('signup')} style={styles.logIN}> Sign Up</Text>
             </Text>
           </View>
@@ -199,7 +231,7 @@ const styles = StyleSheet.create({
   containerLOader: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor:theme.colors.primary
+    backgroundColor: theme.colors.primary,
   },
   horizontalLoad: {
     flexDirection: 'row',
@@ -208,9 +240,4 @@ const styles = StyleSheet.create({
   },
 });
 
-
-
-
-
-
-export default Signup;
+export default SignIn;

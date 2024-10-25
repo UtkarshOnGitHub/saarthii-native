@@ -1,3 +1,159 @@
+// import React, { useEffect, useState } from "react";
+// import {
+//   StyleSheet,
+//   Text,
+//   View,
+//   FlatList,
+//   Image,
+//   ActivityIndicator,
+//   TouchableOpacity,
+//   TextInput,
+// } from "react-native";
+// import { useRouter } from "expo-router";
+// import { FontAwesome } from "@expo/vector-icons";
+// import { hp, wp } from "../../helpers/common";
+// import CustomButton from "../../components/CustomButton";
+// import { theme } from "../../constants/theme";
+// import Toast from "react-native-toast-message";
+// import { getJourneydataFromPNR } from "../../http/Journey";
+// import JourneyCard from "../../components/JourneyCard/JourneyCard";
+
+// const AllNews = () => {
+//   const [query, setQuery] = useState("");
+//   const [searchQuery, setSearchQuery] = useState("");
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [error, setError] = useState(null);
+//   const [data, setData] = useState({
+//     articles: [
+//       {
+//         url: "https://example.com/article1",
+//         title: "Dummy Article 1",
+//         description: "This is a description for dummy article 1.",
+//         content: "Content for dummy article 1.",
+//         urlToImage: "https://via.placeholder.com/80",
+//       },
+//       {
+//         url: "https://example.com/article2",
+//         title: "Dummy Article 2",
+//         description: "This is a description for dummy article 2.",
+//         content: "Content for dummy article 2.",
+//         urlToImage: "https://via.placeholder.com/80",
+//       },
+//       {
+//         url: "https://example.com/article3",
+//         title: "Dummy Article 2",
+//         description: "This is a description for dummy article 2.",
+//         content: "Content for dummy article 2.",
+//         urlToImage: "https://via.placeholder.com/80",
+//       },
+//       {
+//         url: "https://example.com/article4",
+//         title: "Dummy Article 2",
+//         description: "This is a description for dummy article 2.",
+//         content: "Content for dummy article 2.",
+//         urlToImage: "https://via.placeholder.com/80",
+//       },
+//       {
+//         url: "https://example.com/article5",
+//         title: "Dummy Article 2",
+//         description: "This is a description for dummy article 2.",
+//         content: "Content for dummy article 2.",
+//         urlToImage: "https://via.placeholder.com/80",
+//       },
+//     ],
+//   });
+
+//   const [Journyedata , setJourneyData] = useState({})
+
+//   useEffect(()=>{
+//     Toast.show({
+//       type: 'success',
+//       text1: 'Welcome Back!',
+//       text2: 'Create Journey and Make Friends 👋'
+//     });
+//   },[])
+
+//   const router = useRouter();
+
+//   const handleSearch = () => {
+//     setSearchQuery(query);
+//     console.log(query)
+//     // Implement search functionality here
+//     getJourneydataFromPNR(query).then((res)=>{
+//       console.log(res.data)
+//       setJourneyData(res.data)
+//     })
+//   };
+
+//   if (isLoading) {
+//     return (
+//       <View style={styles.loadingContainer}>
+//         <ActivityIndicator size="large" color="#4c669f" />
+//         <Text style={styles.loadingText}>Loading news...</Text>
+//       </View>
+//     );
+//   }
+
+//   if (error) {
+//     return (
+//       <View style={styles.errorContainer}>
+//         <Text style={styles.errorText}>
+//           Error loading news: {error.message}
+//         </Text>
+//       </View>
+//     );
+//   }
+
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.title}>Journeys</Text>
+//       <View style={styles.searchContainer}>
+//         <TextInput
+//           style={styles.searchInput}
+//           placeholder="Enter PNR..."
+//           value={query}
+//           placeholderTextColor={theme.colors.grayDark}
+//           onChangeText={setQuery}
+//         />
+//         <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+//           <Text style={styles.searchButtonText} >Add PNR</Text>
+//         </TouchableOpacity>
+//       </View>
+//       {/* {data && data.articles ? (
+//         <FlatList
+//           data={data.articles}
+//           keyExtractor={(item) => item.url}
+//           renderItem={({ item }) => (
+//             <TouchableOpacity
+//               style={styles.articleContainer}
+//               onPress={() =>
+//                 router.push('news')
+//               }
+//             >
+//               {item.urlToImage && (
+//                 <Image
+//                   source={{ uri: item.urlToImage }}
+//                   style={styles.articleImage}
+//                 />
+//               )}
+//               <View style={styles.textContainer}>
+//                 <Text style={styles.articleTitle}>{item.title}</Text>
+//                 <Text style={styles.articleDescription} numberOfLines={2}>
+//                   {item.description}
+//                 </Text>
+//               </View>
+//             </TouchableOpacity>
+//           )}
+//         />
+//       ) : (
+//         <Text style={styles.noResultsText}>No news articles found.</Text>
+//       )} */}
+//       <JourneyCard  journeyData={Journyedata}/>
+//     </View>
+//   );
+// };
+
+// export default AllNews;
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -15,6 +171,9 @@ import { hp, wp } from "../../helpers/common";
 import CustomButton from "../../components/CustomButton";
 import { theme } from "../../constants/theme";
 import Toast from "react-native-toast-message";
+import { getJourneydataFromPNR } from "../../http/Journey";
+import JourneyCard from "../../components/JourneyCard/JourneyCard";
+import NoResultsCard from "../../components/NoResultCard/NoResult"; // Import the new component
 
 const AllNews = () => {
   const [query, setQuery] = useState("");
@@ -22,65 +181,44 @@ const AllNews = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState({
-    articles: [
-      {
-        url: "https://example.com/article1",
-        title: "Dummy Article 1",
-        description: "This is a description for dummy article 1.",
-        content: "Content for dummy article 1.",
-        urlToImage: "https://via.placeholder.com/80",
-      },
-      {
-        url: "https://example.com/article2",
-        title: "Dummy Article 2",
-        description: "This is a description for dummy article 2.",
-        content: "Content for dummy article 2.",
-        urlToImage: "https://via.placeholder.com/80",
-      },
-      {
-        url: "https://example.com/article3",
-        title: "Dummy Article 2",
-        description: "This is a description for dummy article 2.",
-        content: "Content for dummy article 2.",
-        urlToImage: "https://via.placeholder.com/80",
-      },
-      {
-        url: "https://example.com/article4",
-        title: "Dummy Article 2",
-        description: "This is a description for dummy article 2.",
-        content: "Content for dummy article 2.",
-        urlToImage: "https://via.placeholder.com/80",
-      },
-      {
-        url: "https://example.com/article5",
-        title: "Dummy Article 2",
-        description: "This is a description for dummy article 2.",
-        content: "Content for dummy article 2.",
-        urlToImage: "https://via.placeholder.com/80",
-      },
-    ],
+    articles: [],
   });
+  const [journeyData, setJourneyData] = useState({});
 
-  useEffect(()=>{
+  useEffect(() => {
     Toast.show({
       type: 'success',
       text1: 'Welcome Back!',
       text2: 'Create Journey and Make Friends 👋'
     });
-  },[])
+  }, []);
 
   const router = useRouter();
 
   const handleSearch = () => {
     setSearchQuery(query);
-    // Implement search functionality here
+    console.log(typeof query);
+    setIsLoading(true);
+    getJourneydataFromPNR(parseInt(query)).then((res) => {
+      console.log(res.data)
+      // if(!res.data.trainName){
+      //   setError(err);
+      //   setIsLoading(false)
+      //   return;
+      // }
+      setJourneyData(res.data);
+      setIsLoading(false); 
+    }).catch((err) => {
+      setError(err);
+      setIsLoading(false); 
+    });
   };
 
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#4c669f" />
-        <Text style={styles.loadingText}>Loading news...</Text>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+        <Text style={styles.loadingText}>Loading journey data...</Text>
       </View>
     );
   }
@@ -89,7 +227,7 @@ const AllNews = () => {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>
-          Error loading news: {error.message}
+          Error loading journey data: {error.message}
         </Text>
       </View>
     );
@@ -103,46 +241,27 @@ const AllNews = () => {
           style={styles.searchInput}
           placeholder="Enter PNR..."
           value={query}
+          placeholderTextColor={theme.colors.grayDark}
           onChangeText={setQuery}
+          keyboardType='numeric'
         />
         <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
           <Text style={styles.searchButtonText}>Add PNR</Text>
         </TouchableOpacity>
       </View>
-      {data && data.articles ? (
-        <FlatList
-          data={data.articles}
-          keyExtractor={(item) => item.url}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.articleContainer}
-              onPress={() =>
-                router.push('news')
-              }
-            >
-              {item.urlToImage && (
-                <Image
-                  source={{ uri: item.urlToImage }}
-                  style={styles.articleImage}
-                />
-              )}
-              <View style={styles.textContainer}>
-                <Text style={styles.articleTitle}>{item.title}</Text>
-                <Text style={styles.articleDescription} numberOfLines={2}>
-                  {item.description}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
+      
+      {Object.keys(journeyData).length > 0 && journeyData?.trainName? (
+        <JourneyCard journeyData={journeyData} />
       ) : (
-        <Text style={styles.noResultsText}>No news articles found.</Text>
+        <NoResultsCard />
       )}
     </View>
   );
 };
 
 export default AllNews;
+
+
 
 const styles = StyleSheet.create({
   container: {

@@ -62,7 +62,6 @@ const Signup = () => {
     SignUpFromAxios({ name, email, password, mobileNumber }).then((res) => {
       setIsLoading(true)
       setIsLoading(false)
-      console.log(res)
       if (res.data.redirect) {
         router.push('signin');
       } else {
@@ -73,7 +72,6 @@ const Signup = () => {
         });
       }
     }).catch((err) => {
-        console.log(err);
         setIsLoading(false)
         Toast.show({
           type: 'error',
@@ -104,16 +102,16 @@ const Signup = () => {
           </View>
           <View style={styles.form}>
             <View style={styles.inputContainer}>
-              <TextInput fontSize={18} editable maxLength={40} value={name} onChangeText={handleFullNameChange} placeholder="Your Name" />
+              <TextInput fontSize={18} editable maxLength={40} value={name} onChangeText={handleFullNameChange} placeholder="Your Name" placeholderTextColor={theme.colors.grayDark}/>
             </View>
             <View style={styles.inputContainer}>
-              <TextInput fontSize={18} editable maxLength={40} value={email} onChangeText={handleInputChange} placeholder="Enter Email" />
+              <TextInput fontSize={18} editable maxLength={40} value={email} onChangeText={handleInputChange} placeholder="Enter Email" placeholderTextColor={theme.colors.grayDark} />
             </View>
             <View style={styles.inputContainer}>
-              <TextInput fontSize={18} editable maxLength={10} keyboardType='numeric' value={mobileNumber} onChangeText={handleMobileNumber} placeholder="Mobile Number" />
+              <TextInput fontSize={18} editable maxLength={10} keyboardType='numeric' value={mobileNumber} onChangeText={handleMobileNumber} placeholder="Mobile Number" placeholderTextColor={theme.colors.grayDark}/>
             </View>
             <View style={styles.inputContainer}>
-              <TextInput fontSize={18} editable maxLength={40} value={password} onChangeText={handlePasswordChange} placeholder="Create Password" secureTextEntry />
+              <TextInput fontSize={18} editable maxLength={40} value={password} onChangeText={handlePasswordChange} placeholder="Create Password" secureTextEntry placeholderTextColor={theme.colors.grayDark}/>
             </View>
           </View>
           <View style={{ width: wp(95) }}>

@@ -1,19 +1,16 @@
+import { router } from "expo-router";
 import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
-// import { useDispatch, useSelector } from "react-redux";
+import { useAuth } from "../../Context/AuthContext";
 
-// import { useRouter } from "expo-router";
-// import { logoutAction } from "../(redux)/authSlice";
-// import ProtectedRoute from "../../components/ProtectedRoute";
 
 export default function Profile() {
-//   const router = useRouter();
-//   const dispatch = useDispatch();
-//   const user = useSelector((state) => state.auth.user);
+  const { token, deleteToken } = useAuth();
 
   const handleLogout = () => {
-    // dispatch(logoutAction());
-    router.push("/auth/login");
+    router.push("signin");
+    deleteToken()
+
   };
 
   return (
