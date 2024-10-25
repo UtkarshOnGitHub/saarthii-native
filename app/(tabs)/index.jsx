@@ -160,30 +160,23 @@ import {
   Text,
   View,
   FlatList,
-  Image,
-  ActivityIndicator,
-  TouchableOpacity,
   TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { FontAwesome } from "@expo/vector-icons";
-import { hp, wp } from "../../helpers/common";
-import CustomButton from "../../components/CustomButton";
-import { theme } from "../../constants/theme";
 import Toast from "react-native-toast-message";
 import { getJourneydataFromPNR } from "../../http/Journey";
 import JourneyCard from "../../components/JourneyCard/JourneyCard";
-import NoResultsCard from "../../components/NoResultCard/NoResult"; // Import the new component
+import NoResultsCard from "../../components/NoResultCard/NoResult"; 
+import { theme } from "../../constants/theme";
 
 const AllNews = () => {
   const [query, setQuery] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [data, setData] = useState({
-    articles: [],
-  });
   const [journeyData, setJourneyData] = useState({});
+  const router = useRouter();
 
   useEffect(() => {
     Toast.show({
@@ -193,75 +186,70 @@ const AllNews = () => {
     });
   }, []);
 
-  const router = useRouter();
-
   const handleSearch = () => {
-    setSearchQuery(query);
-    console.log(typeof query);
     setIsLoading(true);
-    getJourneydataFromPNR(parseInt(query)).then((res) => {
-      console.log(res.data)
-      // if(!res.data.trainName){
-      //   setError(err);
-      //   setIsLoading(false)
-      //   return;
-      // }
-      setJourneyData(res.data);
-      setIsLoading(false); 
-    }).catch((err) => {
-      setError(err);
-      setIsLoading(false); 
-    });
+    getJourneydataFromPNR(parseInt(query))
+      .then((res) => {
+        setJourneyData(res.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setError(err);
+        setIsLoading(false);
+      });
   };
 
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-        <Text style={styles.loadingText}>Loading journey data...</Text>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>
-          Error loading journey data: {error.message}
-        </Text>
-      </View>
-    );
-  }
+  const renderJourneyCard = () => {
+    return Object.keys(journeyData).length > 0 && journeyData?.trainName
+      ? <JourneyCard journeyData={journeyData} />
+      : <NoResultsCard />;
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Journeys</Text>
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Enter PNR..."
-          value={query}
-          placeholderTextColor={theme.colors.grayDark}
-          onChangeText={setQuery}
-          keyboardType='numeric'
-        />
-        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-          <Text style={styles.searchButtonText}>Add PNR</Text>
-        </TouchableOpacity>
-      </View>
-      
-      {Object.keys(journeyData).length > 0 && journeyData?.trainName? (
-        <JourneyCard journeyData={journeyData} />
-      ) : (
-        <NoResultsCard />
-      )}
-    </View>
+        <View style={styles.container}>
+          <Text style={styles.title}>Journeys</Text>
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Enter PNR..."
+              value={query}
+              placeholderTextColor={theme.colors.grayDark}
+              onChangeText={setQuery}
+              keyboardType='numeric'
+            />
+            <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+              <Text style={styles.searchButtonText}>Add PNR</Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={[{}]} 
+            keyExtractor={() => 'fixed-key'}
+            showsVerticalScrollIndicator={false} 
+            showsHorizontalScrollIndicator={false}
+            renderItem={()=>(
+              <>
+              {isLoading ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="large" color={theme.colors.primary} />
+                  <Text style={styles.loadingText}>Loading journey data...</Text>
+                </View>
+              ) : error ? (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>
+                    Error loading journey data: {error.message}
+                  </Text>
+                </View>
+              ) : (
+                renderJourneyCard()
+              )}
+              </>
+            )} 
+          />
+        </View>
   );
 };
 
 export default AllNews;
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -281,13 +269,12 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    padding: hp(1.3),
+    padding: 12,
     borderRadius: 8,
     backgroundColor: "#fff",
     marginRight: 8,
     borderWidth: 1,
     borderColor: "#ccc",
-    fontSize:hp(2)
   },
   searchButton: {
     padding: 8,
@@ -295,44 +282,10 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
     justifyContent: "center",
     alignItems: "center",
-    width:wp(20)
   },
   searchButtonText: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize:hp(1.8)
-  },
-  articleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-    marginVertical: 8,
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  articleImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
-    marginRight: 16,
-  },
-  textContainer: {
-    flex: 1,
-  },
-  articleTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 4,
-  },
-  articleDescription: {
-    fontSize: 14,
-    color: "#666",
   },
   loadingContainer: {
     flex: 1,
@@ -342,7 +295,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 8,
     fontSize: 16,
-    color: "#4c669f",
+    color: theme.colors.primary,
   },
   errorContainer: {
     flex: 1,
@@ -355,10 +308,5 @@ const styles = StyleSheet.create({
     color: "#d9534f",
     textAlign: "center",
   },
-  noResultsText: {
-    textAlign: "center",
-    fontSize: 16,
-    color: "#666",
-    marginTop: 16,
-  },
 });
+

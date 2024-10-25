@@ -4,6 +4,7 @@ import { theme } from "../../constants/theme";
 import ScreenWrapper from "../../constants/ScreenWrapper";
 import Toast from "react-native-toast-message";
 import { useAuth } from "../../Context/AuthContext";
+import { ScrollView } from "react-native";
 
 
 export default function RootLayout(){

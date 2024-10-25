@@ -37,7 +37,7 @@ const SignIn = () => {
   }, []);
 
   useEffect(() => {
-    if(typeof token == 'object'){
+    if(typeof token == 'object' || !token){
       return;
     }else{
       router.push("/(tabs)");

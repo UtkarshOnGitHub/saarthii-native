@@ -1,9 +1,11 @@
 import React from "react";
+import { ScrollView } from "react-native";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const Settings = () => {
   return (
+    <ScrollView>
     <View style={styles.container}>
       <Text style={styles.header}>Settings</Text>
       <View style={styles.section}>
@@ -59,6 +61,7 @@ const Settings = () => {
         </TouchableOpacity>
       </View>
     </View>
+    </ScrollView>
   );
 };
 

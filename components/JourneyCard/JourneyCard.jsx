@@ -7,8 +7,8 @@ import MapView, { Marker } from 'react-native-maps';
 
 const JourneyCard = ({ journeyData }) => {
   const boardingLocation = {
-    latitude: '16.075836', 
-    longitude: '77.037434', 
+    latitude: 16.075836, 
+    longitude: 77.037434, 
   };
 
   const renderPassenger = ({ item }) => (
@@ -32,28 +32,42 @@ const JourneyCard = ({ journeyData }) => {
       <Text style={styles.title}>Journey Details</Text>
 
       <View style={styles.infoRow}>
-        <FontAwesome name="train" size={20} color={theme.colors.primary} />
+        <FontAwesome style={{width:20}} name="train" size={20} color={theme.colors.primary} />
         <Text style={styles.infoText}>{journeyData.trainName} ({journeyData.trainNumber})</Text>
       </View>
 
 
       <View style={styles.infoRow}>
-        <FontAwesome name="map-marker" size={20} color={theme.colors.primary} />
+        <FontAwesome style={{width:20}} name="map-marker" size={20} color={theme.colors.primary} />
         <Text style={styles.infoText}>
-          {journeyData.sourceStation} to {journeyData.destinationStation} on {journeyData.dateOfJourney}
+          {journeyData.sourceStation} to {journeyData.destinationStation}
         </Text>
       </View>
 
+      <View style={styles.infoRow}>
+        <FontAwesome style={{width:20}} name="calendar" size={20} color={theme.colors.primary} />
+        <Text style={styles.infoText}>
+          {journeyData.dateOfJourney}
+        </Text>
+      </View>
+
+            <View style={styles.infoRow}>
+        <FontAwesome style={{width:20}} name="list" size={20} color={theme.colors.primary} />
+        <Text style={styles.infoText}>
+          {journeyData.quota}
+        </Text>
+      </View>
+      
       {/* Display Boarding Point with Map */}
 
 
       <View style={styles.infoRow}>
-        <FontAwesome name="user" size={20} color={theme.colors.primary} />
+        <FontAwesome style={{width:20}} name="user" size={20} color={theme.colors.primary} />
         <Text style={styles.infoText}>Passengers: {journeyData.numberOfpassenger}</Text>
       </View>
 
       <View style={styles.infoRow}>
-        <FontAwesome name="money" size={20} color={theme.colors.primary} />
+        <FontAwesome style={{width:20}} name="money" size={20} color={theme.colors.primary} />
         <Text style={styles.infoText}>Fare: ₹{journeyData.bookingFare}</Text>
       </View>
       <Text style={styles.passengerTitle}>Passenger List:</Text>
@@ -62,8 +76,10 @@ const JourneyCard = ({ journeyData }) => {
         keyExtractor={(item) => item.passengerSerialNumber.toString()}
         renderItem={renderPassenger}
         contentContainerStyle={styles.passengerList}
+        showsVerticalScrollIndicator={false} 
+        showsHorizontalScrollIndicator={false}
       />
-            <Text style={styles.mapTitle}>Boarding Point:</Text>
+      <Text style={styles.mapTitle}>Boarding Point:</Text>
       <MapView
         style={styles.map}
         initialRegion={{
@@ -77,8 +93,10 @@ const JourneyCard = ({ journeyData }) => {
     </View>
   );
 };
+// 4825811619
 const styles = StyleSheet.create({
   card: {
+    // flex:1,
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 20,
@@ -135,16 +153,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 12,
-    marginBottom: 8,
+    // marginBottom: 1,
   },
   passengerList: {
-    paddingBottom: 10,
+    paddingBottom: 2,
   },
   passengerRow: {
     backgroundColor: theme.colors.lightGray,
     borderRadius: 8,
     padding: 10,
-    marginVertical: 5,
+    marginVertical: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
