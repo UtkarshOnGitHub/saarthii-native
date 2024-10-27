@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { router, useRouter } from "expo-router";
 import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useAuth } from "../../Context/AuthContext";
@@ -6,10 +6,11 @@ import { useAuth } from "../../Context/AuthContext";
 
 export default function Profile() {
   const { token, deleteToken } = useAuth();
+  const router = useRouter()
 
-  const handleLogout = () => {
-    router.push("signin");
-    deleteToken()
+  const handleLogout = async() => {
+    await deleteToken()
+    router.replace("signin")
 
   };
 

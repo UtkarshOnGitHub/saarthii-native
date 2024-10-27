@@ -29,7 +29,7 @@ const JourneyCard = ({ journeyData }) => {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>Journey Details</Text>
+      <Text style={styles.title}>{journeyData.pnrNumber}</Text>
 
       <View style={styles.infoRow}>
         <FontAwesome style={{width:20}} name="train" size={20} color={theme.colors.primary} />
@@ -93,6 +93,7 @@ const JourneyCard = ({ journeyData }) => {
     </View>
   );
 };
+// eas init --id c7476cc5-9559-4e2a-acdc-7101986e7150
 // 4825811619
 const styles = StyleSheet.create({
   card: {

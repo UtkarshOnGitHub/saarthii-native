@@ -37,6 +37,7 @@ const SignIn = () => {
   }, []);
 
   useEffect(() => {
+    console.log(token)
     if(typeof token == 'object' || !token){
       return;
     }else{
@@ -53,6 +54,7 @@ const SignIn = () => {
   };
 
   const handleSignIn = () => {
+    // router.push("/(tabs)");
     setIsLoading(true);
     if (!email || !password) {
         Alert.alert('Login', 'Please fill all the fields!');
@@ -65,10 +67,9 @@ const SignIn = () => {
             if (res.data.redirect) {
                 const newToken = res.headers['set-cookie'][0].split('=')[1].split(';')[0];
                 updateToken(newToken);
-                // Reset the navigation state to the home screen
                 navigation.reset({
                     index: 0,
-                    routes: [{ name: '(tabs)' }], // Adjust to your home screen route
+                    routes: [{ name: '(tabs)' }],
                 });
             } else {
                 Toast.show({

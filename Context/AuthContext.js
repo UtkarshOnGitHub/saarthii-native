@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
 
     const deleteToken = async() => {
         await SecureStore.deleteItemAsync('authToken');
-        setToken('');
+        setToken(null);
     };
 
     return (

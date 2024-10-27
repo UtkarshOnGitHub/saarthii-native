@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "saarthii-native",
-    "slug": "saarthii-native",
+    "slug": "saarthii-dev",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -13,10 +13,14 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.noxkira.saarthiinative"
     },
     "android": {
-      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -39,8 +43,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "6ad25ac8-06f4-4fa6-901a-a444cb2387ca"
+        "projectId": "c7476cc5-9559-4e2a-acdc-7101986e7150"
       }
-    }
+    },
+    "owner": "saarthii"
   }
 }
