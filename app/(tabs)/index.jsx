@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, RefreshControl } from 'react-native';
 import { AntDesign, Feather, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { theme } from '../../constants/theme'; // Adjust this path as needed
 import { hp, wp } from '../../helpers/common';
@@ -66,11 +66,13 @@ const journeyData = [
 ];
 
 const IndexPage = () => {
-  const renderItem = ({ item }) => (
-    <View style={styles.postCard}>
-      <Text style={styles.postText}>{item.content}</Text>
-    </View>
-  );
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    // await getAllJourneys();
+    setRefreshing(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -95,6 +97,9 @@ const IndexPage = () => {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <PostCard journeyDetails={item} />}
           contentContainerStyle={{ padding: 16 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
         />
     </View>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,17 +7,24 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  RefreshControl,
+  ToastAndroid,
+  Keyboard
 } from "react-native";
 import { useRouter } from "expo-router";
-import { getJourneyDataForUser, getJourneydataFromPNR } from "../../http/Journey";
+import { addJourneyDataForUser, getJourneyDataForUser } from "../../http/Journey";
 import JourneyCard from "../../components/JourneyCard/JourneyCard";
 import NoResultsCard from "../../components/NoResultCard/NoResult"; 
 import { theme } from "../../constants/theme";
-import { hp } from "../../helpers/common";
+import { hp, wp } from "../../helpers/common";
+import Toast from 'react-native-toast-message';
+import { toastConfig } from "../../helpers/ToastConfi";
+
 
 const Journeys = () => {
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
   const [AllJourneyForUser, setAllJourneyForUser] = useState([]);
   const router = useRouter();
@@ -26,7 +33,7 @@ const Journeys = () => {
     setIsLoading(true);
     try {
       let res = await getJourneyDataForUser();
-      console.log(res.data.length)
+      console.log(res.data.length);
       setAllJourneyForUser(res?.data || []);
     } catch (error) {
       setError(error);
@@ -35,21 +42,48 @@ const Journeys = () => {
     }
   };
 
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await getAllJourneys();
+    setRefreshing(false);
+  };
+
   useEffect(() => {
     getAllJourneys();
   }, []);
 
   const handleSearch = () => {
     setIsLoading(true);
-    getJourneydataFromPNR(parseInt(query))
+    Keyboard.dismiss();
+    addJourneyDataForUser({ pnrNumber: query })
       .then((res) => {
+        console.log(res)
         if (res.isSuccess) {
           getAllJourneys(); 
+          Toast.show({
+            type: 'success',
+            text1: 'Success',
+            text2: 'Journey Has Been Added!',
+            visibilityTime:1000
+          });
+        }else{
+          Toast.show({
+            type: 'error',
+            text1: 'Error',
+            text2: res.message,
+            position:'bottom'
+          });
         }
         setError(null);
       })
       .catch((err) => {
         setError(err);
+        console.log(err)
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: err.message,
+        });
       })
       .finally(() => {
         setIsLoading(false);
@@ -61,28 +95,6 @@ const Journeys = () => {
   };
 
   const renderEmptyList = () => <NoResultsCard />;
-  if(error){
-    <View style={styles.container}>
-    <View style={styles.searchContainer}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Enter PNR..."
-        value={query}
-        placeholderTextColor={theme.colors.grayDark}
-        onChangeText={setQuery}
-        keyboardType='numeric'
-      />
-      <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-        <Text style={styles.searchButtonText}>Add PNR</Text>
-      </TouchableOpacity>
-    </View>
-    <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>
-            Error loading journey data: {error.message}
-          </Text>
-        </View>
-    </View>
-  }
 
   return (
     <View style={styles.container}>
@@ -93,28 +105,31 @@ const Journeys = () => {
           value={query}
           placeholderTextColor={theme.colors.grayDark}
           onChangeText={setQuery}
-          keyboardType='numeric'
+          keyboardType="numeric"
         />
         <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
           <Text style={styles.searchButtonText}>Add PNR</Text>
         </TouchableOpacity>
       </View>
 
-      {isLoading ? (
+      {isLoading && !refreshing ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
-          <Text style={styles.loadingText}>Loading journey data...</Text>
+          <Text style={styles.loadingText}>Creating Journey...</Text>
         </View>
-      ) :  (
+      ) : (
         <FlatList
           data={AllJourneyForUser}
           keyExtractor={(item) => item?.pnrNumber}
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
           renderItem={renderJourneyCard}
-          ListEmptyComponent={renderEmptyList} 
+          ListEmptyComponent={renderEmptyList}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
         />
       )}
+      <Toast swipeable={true} config={toastConfig} />
     </View>
   );
 };
