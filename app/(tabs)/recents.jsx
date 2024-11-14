@@ -1,9 +1,17 @@
+import { router } from "expo-router";
 import React from "react";
 import { ScrollView } from "react-native";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { useAuth } from "../../Context/AuthContext";
 
 const Settings = () => {
+  const { token, deleteToken } = useAuth();
+  const handleLogout = async() => {
+    await deleteToken()
+    router.replace("signin")
+
+  };
   return (
     <ScrollView>
     <View style={styles.container}>
@@ -49,7 +57,7 @@ const Settings = () => {
             style={styles.optionIcon}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.option}>
+        <TouchableOpacity style={styles.option} onPress={handleLogout}>
           <Icon name="sign-out" size={24} color="#e91e63" />
           <Text style={styles.optionText}>Logout</Text>
           <Icon
