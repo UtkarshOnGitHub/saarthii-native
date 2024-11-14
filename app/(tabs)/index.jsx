@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, RefreshControl } from 'react-native';
-import { AntDesign, Feather, FontAwesome, Ionicons } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { theme } from '../../constants/theme'; // Adjust this path as needed
-import { hp, wp } from '../../helpers/common';
+import { hp } from '../../helpers/common';
 import PostCard from '../../components/JourneyPost/JourneyPostCard';
+import { useNavigation } from '@react-navigation/native';
 
 const journeyData = [
   {
@@ -74,6 +75,11 @@ const IndexPage = () => {
     setRefreshing(false);
   };
 
+  const navigation = useNavigation();
+  const handleMessagePress = () => {
+    navigation.navigate('chat');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
@@ -87,7 +93,7 @@ const IndexPage = () => {
           <TouchableOpacity>
             <Ionicons name="notifications-outline" size={hp(3.2)} />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleMessagePress}>
             <AntDesign name="message1" size={hp(3.2)} color={theme.colors.textDark} />
           </TouchableOpacity>
         </View>
