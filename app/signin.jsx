@@ -11,6 +11,7 @@ import { useNavigation, useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { useAuth } from '../Context/AuthContext';
 import { ServerURL } from '../Server/Service';
+import { toastConfig } from '../helpers/ToastConfi';
 
 
 const SignIn = () => {
@@ -76,6 +77,7 @@ const SignIn = () => {
                     type: 'error',
                     text1: 'Ooopss',
                     text2: 'Something Went Wrong!',
+                    position:'bottom'
                 });
             }
         })
@@ -86,6 +88,7 @@ const SignIn = () => {
                 type: 'error',
                 text1: 'Ooopss',
                 text2: 'Something Went Wrong!',
+                position:'bottom'
             });
         });
 };
@@ -162,7 +165,7 @@ const SignIn = () => {
           </View>
         </View>
       </KeyboardAvoidingView>
-      <Toast swipeable={true} />
+      <Toast swipeable={true} config={toastConfig}/>
     </ScreenWrapper>
   );
 };

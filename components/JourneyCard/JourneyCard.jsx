@@ -1,14 +1,62 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, TextInput, Button, Switch, Image, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { hp, wp } from '../../helpers/common';
 import { theme } from '../../constants/theme';
-import MapView, { Marker } from 'react-native-maps';
+import * as ImagePicker from 'expo-image-picker';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from '../../helpers/ToastConfi';
+import ShowJourneyModal from '../Modals/showJourneyModal';
+import CustomButton from '../CustomButton';
+// import { RichEditor, RichToolbar } from 'react-native-pell-rich-editor';
 
 const JourneyCard = ({ journeyData }) => {
-  const boardingLocation = {
-    latitude: 16.075836, 
-    longitude: 77.037434, 
+  const [isVisible, setIsVisible] = useState(false);
+  const [message, setMessage] = useState('');
+  const [image, setImage] = useState(null);
+  const [isEnabled, setIsEnabled] = useState(false);
+  const richText = useRef();
+  const handleToggleVisibility = () => {
+    setIsVisible(!isVisible);
+  };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const closemodal = (value)=>{
+    setIsVisible(!value)
+  }
+
+  const toggleSwitch = () => {
+    setIsEnabled(!isEnabled);
+    if (!Toast) {
+      return;
+    }
+    if (isEnabled) {
+      Toast.show({
+        type: 'tomatoToast',
+        text1: 'Journey Archived',
+        visibilityTime: 1000,
+        position: 'bottom',
+      });
+    } else {
+      Toast.show({
+        type: 'tomatoToast',
+        text1: 'Journey Unarchived',
+        text2: 'Enjoy Ride For Home',
+        visibilityTime: 1000,
+        position: 'bottom',
+      });
+    }
   };
 
   const renderPassenger = ({ item }) => (
@@ -28,76 +76,79 @@ const JourneyCard = ({ journeyData }) => {
   );
 
   return (
-    <View style={styles.card}>
-      <Text style={styles.title}>{journeyData.pnrNumber}</Text>
+    <View style={[styles.card]}>
+      <View style={styles.topCardCont}>
+        <Text style={styles.title}>{journeyData.pnrNumber}</Text>
+        <View>
+          <Switch
+            style={styles.switch}
+            trackColor={{ false: '#767577', true: '#a6d487' }}
+            thumbColor={isEnabled ? theme.colors.primary : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+          />
+        </View>
+      </View>
 
       <View style={styles.infoRow}>
-        <FontAwesome style={{width:20}} name="train" size={20} color={theme.colors.primary} />
+        <FontAwesome style={{ width: 20 }} name="train" size={20} color={theme.colors.primary} />
         <Text style={styles.infoText}>{journeyData.trainName} ({journeyData.trainNumber})</Text>
       </View>
 
-
       <View style={styles.infoRow}>
-        <FontAwesome style={{width:20}} name="map-marker" size={20} color={theme.colors.primary} />
+        <FontAwesome style={{ width: 20 }} name="map-marker" size={20} color={theme.colors.primary} />
         <Text style={styles.infoText}>
           {journeyData.sourceStation} to {journeyData.destinationStation}
         </Text>
       </View>
 
       <View style={styles.infoRow}>
-        <FontAwesome style={{width:20}} name="calendar" size={20} color={theme.colors.primary} />
+        <FontAwesome style={{ width: 20 }} name="calendar" size={20} color={theme.colors.primary} />
         <Text style={styles.infoText}>
           {journeyData.dateOfJourney}
         </Text>
       </View>
 
-            <View style={styles.infoRow}>
-        <FontAwesome style={{width:20}} name="list" size={20} color={theme.colors.primary} />
+      <View style={styles.infoRow}>
+        <FontAwesome style={{ width: 20 }} name="list" size={20} color={theme.colors.primary} />
         <Text style={styles.infoText}>
           {journeyData.quota}
         </Text>
       </View>
-      
-      {/* Display Boarding Point with Map */}
-
 
       <View style={styles.infoRow}>
-        <FontAwesome style={{width:20}} name="user" size={20} color={theme.colors.primary} />
+        <FontAwesome style={{ width: 20 }} name="user" size={20} color={theme.colors.primary} />
         <Text style={styles.infoText}>Passengers: {journeyData.numberOfpassenger}</Text>
       </View>
 
       <View style={styles.infoRow}>
-        <FontAwesome style={{width:20}} name="money" size={20} color={theme.colors.primary} />
+        <FontAwesome style={{ width: 20 }} name="money" size={20} color={theme.colors.primary} />
         <Text style={styles.infoText}>Fare: ₹{journeyData.bookingFare}</Text>
       </View>
+
+      <ShowJourneyModal isVisible={isVisible} closemodal={closemodal}/>
+
       <Text style={styles.passengerTitle}>Passenger List:</Text>
       <FlatList
         data={journeyData?.passengerList}
         keyExtractor={(item) => item.passengerSerialNumber.toString()}
         renderItem={renderPassenger}
         contentContainerStyle={styles.passengerList}
-        showsVerticalScrollIndicator={false} 
+        showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
       />
-      <Text style={styles.mapTitle}>Boarding Point:</Text>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          ...boardingLocation,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        }}
-      >
-        <Marker coordinate={boardingLocation} title="Boarding Point" />
-      </MapView>
+      <CustomButton onPress={handleToggleVisibility}
+        title="Make Journey Public"
+        // isLoading={isLoading}
+        btnStyle={{ marginHorizontal: wp(3), marginTop: hp(3) }}/>
+      <Toast config={toastConfig} />
     </View>
   );
 };
-// eas init --id c7476cc5-9559-4e2a-acdc-7101986e7150
-// 4825811619
+
 const styles = StyleSheet.create({
   card: {
-    // flex:1,
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 20,
@@ -108,24 +159,51 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  topCardCont: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  switch: {
+    margin: 0,
+    padding: 0,
+  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 12,
     color: theme.colors.primary,
   },
-  mapTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 12,
-    marginBottom: 8,
-    color: '#333',
+  messageContainer: {
+    marginTop: 10,
   },
-  map: {
+  messageInput: {
+    height: 100,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 10,
+    textAlignVertical: 'top',
+  },
+  uploadButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: theme.colors.lightGray,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  uploadText: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: theme.colors.primary,
+  },
+  image: {
     width: '100%',
     height: 200,
     borderRadius: 8,
-    marginBottom: 12,
+    marginTop: 10,
   },
   infoRow: {
     flexDirection: 'row',
@@ -137,24 +215,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
-  chartStatus: {
-    marginTop: 12,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: theme.colors.gray,
-    borderRadius: 8,
-    backgroundColor: theme.colors.lightGray,
-  },
-  chartText: {
-    fontSize: 14,
-    color: theme.colors.darkGray,
-    textAlign: 'center',
-  },
   passengerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 12,
-    // marginBottom: 1,
   },
   passengerList: {
     paddingBottom: 2,

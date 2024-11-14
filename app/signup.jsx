@@ -10,6 +10,7 @@ import SignupButtons from "../components/SignUpButtons";
 import { SignInFromAxios, SignUpFromAxios } from "../http/Auth";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
+import { toastConfig } from "../helpers/ToastConfi";
 
 const Signup = () => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -69,6 +70,7 @@ const Signup = () => {
           type: 'error',
           text1: 'Ooopss',
           text2: 'Something Went Wrong!',
+          position:'bottom'
         });
       }
     }).catch((err) => {
@@ -77,6 +79,7 @@ const Signup = () => {
           type: 'error',
           text1: 'Ooopss',
           text2: 'Something Went Wrong!',
+          position:'bottom'
         });
       });
   }
@@ -131,7 +134,7 @@ const Signup = () => {
           </View>
         </View>
       </KeyboardAvoidingView>
-      <Toast />
+      <Toast config={toastConfig}/>
     </ScreenWrapper>
   );
 };

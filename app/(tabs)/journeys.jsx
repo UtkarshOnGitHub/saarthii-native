@@ -33,7 +33,6 @@ const Journeys = () => {
     setIsLoading(true);
     try {
       let res = await getJourneyDataForUser();
-      console.log(res.data.length);
       setAllJourneyForUser(res?.data || []);
     } catch (error) {
       setError(error);
@@ -64,7 +63,8 @@ const Journeys = () => {
             type: 'success',
             text1: 'Success',
             text2: 'Journey Has Been Added!',
-            visibilityTime:1000
+            visibilityTime:1000,
+            position:'top'
           });
         }else{
           Toast.show({
