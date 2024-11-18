@@ -115,7 +115,7 @@ const Journeys = () => {
       {isLoading && !refreshing ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
-          <Text style={styles.loadingText}>Creating Journey...</Text>
+          <Text style={styles.loadingText}>Fetching Journey...</Text>
         </View>
       ) : (
         <FlatList
