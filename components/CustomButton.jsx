@@ -13,7 +13,6 @@ const CustomButton = ({
         shadowOpacity:0.2,
         shadowRadius:8,
         elevation:4
-        
     }
 
   return (
