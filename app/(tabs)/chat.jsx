@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, FlatList, Image, TextInput } from 'react-native';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
-export default function Chat({ navigation }) {
-  console.log('Chat component loaded');
+export default function Chat() {
+  const router = useRouter();
   const [searchText, setSearchText] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
@@ -53,8 +54,10 @@ export default function Chat({ navigation }) {
   };
 
   const renderChatItem = ({ item }) => (
-    <TouchableOpacity style={styles.chatItem}
-    // onPress={() => navigation.navigate('ChatScreen', { userId: item.id })}
+    <TouchableOpacity
+      style={styles.chatItem}
+      activeOpacity={0.7}
+      onPress={() => router.push({ pathname: `/chat/${item.id}`, params: { chatName: item.name } })}
     >
       <Image source={{ uri: 'https://i.pinimg.com/736x/4f/bb/a0/4fbba0b8ee601b66f3c88d1d2c80194e.jpg' }} style={styles.avatar} />
       <View style={styles.chatTextContainer}>
