@@ -145,4 +145,4 @@ const styles = StyleSheet.create({
   },
   receiptIcon: {
     marginLeft: 6,
-  },
+  }});
