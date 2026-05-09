@@ -1,9 +1,11 @@
-import React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, FlatList, Image } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity, FlatList, Image, TextInput } from 'react-native';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function Chat({ navigation }) {
   console.log('Chat component loaded');
+  const [searchText, setSearchText] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
   const chatData = [
     { id: '1', name: 'Aditya Patil', message: 'Why don’t scientists trust atoms? Because they make up everything!', },
@@ -27,7 +29,15 @@ export default function Chat({ navigation }) {
     { id: '19', name: 'Vaibhav Mahajan', message: 'Why did the computer go to the doctor? Because it had a virus!', readStatus: 'read' },
     { id: '20', name: 'Anita Sawant', message: 'Why did the banana go to the doctor? It wasn’t peeling well.', },
   ];
-  ;
+
+  const filteredChatData = useMemo(() => {
+    if (!searchText.trim()) return chatData;
+    
+    return chatData.filter(chat => 
+      chat.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      chat.message.toLowerCase().includes(searchText.toLowerCase())
+    );
+  }, [searchText, chatData]);
 
   const renderReadReceipt = (status) => {
     switch (status) {
@@ -63,20 +73,44 @@ export default function Chat({ navigation }) {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Chats</Text>
-        <View style={styles.headerIcons}>
-          <TouchableOpacity style={styles.iconButton}>
-            <Feather name="search" size={24} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            {/* <Ionicons name="md-ellipsis-vertical" size={24} color="black" /> */}
-          </TouchableOpacity>
-        </View>
+        {isSearching ? (
+          <View style={styles.searchContainer}>
+            <MaterialCommunityIcons name="magnify" size={20} color="#999" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search chats..."
+              placeholderTextColor="#999"
+              value={searchText}
+              onChangeText={setSearchText}
+              autoFocus
+            />
+            {searchText.length > 0 && (
+              <TouchableOpacity onPress={() => setSearchText('')}>
+                <MaterialCommunityIcons name="close" size={20} color="#999" />
+              </TouchableOpacity>
+            )}
+          </View>
+        ) : (
+          <>
+            <Text style={styles.headerTitle}>Chats</Text>
+            <View style={styles.headerIcons}>
+              <TouchableOpacity 
+                style={styles.iconButton}
+                onPress={() => setIsSearching(true)}
+              >
+                <Feather name="search" size={24} color="black" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.iconButton}>
+                {/* <Ionicons name="md-ellipsis-vertical" size={24} color="black" /> */}
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
       </View>
 
       {/* Chat List */}
       <FlatList
-        data={chatData}
+        data={filteredChatData}
         keyExtractor={(item) => item.id}
         renderItem={renderChatItem}
         contentContainerStyle={styles.chatList}
@@ -109,6 +143,26 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     marginLeft: 16,
+  },
+  searchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333',
+    paddingVertical: 10,
+    paddingHorizontal: 4,
   },
   chatList: {
     paddingHorizontal: 16,
