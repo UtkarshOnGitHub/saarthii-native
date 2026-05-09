@@ -3,6 +3,7 @@ import { View, StyleSheet, Text, TouchableOpacity, FlatList, Image } from 'react
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function Chat({ navigation }) {
+  console.log('Chat component loaded');
 
   const chatData = [
     { id: '1', name: 'Aditya Patil', message: 'Why don’t scientists trust atoms? Because they make up everything!', },
