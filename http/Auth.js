@@ -22,8 +22,18 @@ import apiClient from "../interceptor-axios/axiosInterceptor";
 
 export const SignInFromAxios = async (payload) => {
   try {
-    const response = await apiClient.post('/authentication/login',payload);
-    return response
+    // const response = await apiClient.post('/authentication/login',payload);
+    // return response
+
+             return {
+    data: {
+        redirect: true
+    },
+    headers: {
+        // Simulating the standard 'set-cookie' array format
+        'set-cookie': ['sessionToken=abc123xyz789; Path=/; HttpOnly']
+    }
+};
   } catch (error) {
     return error
   }
