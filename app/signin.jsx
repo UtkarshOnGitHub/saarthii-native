@@ -57,7 +57,6 @@ const SignIn = () => {
   const handleSignIn = () => {
     // router.push("/(tabs)");
     setIsLoading(true);
-    console.log('dfdsf')
     if (!email || !password) {
         Alert.alert('Login', 'Please fill all the fields!');
         setIsLoading(false);
@@ -65,10 +64,6 @@ const SignIn = () => {
     }
     SignInFromAxios({ email, password })
         .then((res) => {
-
-
-
-
             setIsLoading(false);
             if (res.data.redirect) {
                 const newToken = res.headers['set-cookie'][0].split('=')[1].split(';')[0];
